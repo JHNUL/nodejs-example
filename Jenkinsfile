@@ -20,4 +20,8 @@ node {
       app.push()
     }
   }
+
+  stage('clean') {
+    sh "docker rmi juhanir/nodexample:${commitId}"
+  }
 }
