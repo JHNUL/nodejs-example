@@ -1,10 +1,12 @@
 node {
   String commitId
+  String imageName
 
   stage('Preparation') {
     checkout scm
     sh 'git rev-parse --short HEAD > .git/commit-id'
     commitId = readFile('.git/commit-id').trim()
+    imageName = "juhanir/nodexample:${commitId}"
   }
 
   stage('Test') {
@@ -14,14 +16,14 @@ node {
     }
   }
 
-  stage('docker build') {
+  stage('docker build/push') {
     docker.withRegistry('https://index.docker.io/v1/', 'dockrhubcred') {
-      def app = docker.build("juhanir/nodexample:${commitId}", '.')
+      def app = docker.build(imageName, '.')
       app.push()
     }
   }
 
-  stage('clean') {
-    sh "docker rmi juhanir/nodexample:${commitId}"
+  stage('remove local image') {
+    sh "docker rmi ${imageName}"
   }
 }
