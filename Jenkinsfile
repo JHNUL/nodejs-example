@@ -16,7 +16,7 @@ node {
 
   stage('docker build') {
     docker.withRegistry('https://index.docker.io/v1/', 'dockrhubcred') {
-      def app = docker.build("juhanir/nodexample:${commidId}", '.')
+      def app = docker.build("juhanir/nodexample:${commitId}", '.')
       app.push()
     }
   }
