@@ -1,12 +1,13 @@
 node {
-  String commitId
   String imageName
 
   stage('Preparation') {
     checkout scm
-    sh 'git rev-parse --short HEAD > .git/commit-id'
-    commitId = readFile('.git/commit-id').trim()
-    imageName = "juhanir/nodexample:${commitId}"
+    String commit = sh(
+      script: 'git rev-parse --short=10 HEAD',
+      returnStdout: true
+    ).trim()
+    imageName = "juhanir/nodexample:${commit}"
   }
 
   stage('Test') {
